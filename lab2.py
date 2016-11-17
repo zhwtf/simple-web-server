@@ -17,7 +17,7 @@ s.listen(5)
 
 
 while True:
-    #build the connection
+    #build the connection  
     conn, addr = s.accept();
 
     try:
@@ -36,27 +36,32 @@ while True:
         f.close()
         
         if(version != 'HTTP/1.1'):
-            error = '505 HTTP Version Not Supported'
+            error = '505 HTTP Version Not Supported \n\n'
             print(error)
             conn.send(error.encode('utf-8'))
             conn.close()
         else:
             #send data to the client
-            outputdata = '\nHTTP/1.1 200 OK \n\n'
-            conn.send(outputdata.encode('utf-8'))
+            # get the header of the message
+            header = message.split()[0] + ' ' + message.split()[1] + ' ' + message.split()[2] + '\n\n'
+            #send the messages to the client
+            conn.send(header.encode('utf-8'))
+            
             conn.sendall(data.encode('utf-8'))
 
             conn.close()
 
         
     except IOError:
-        error2 = '\nHTTP/1.1 404 Not Found \n\n'
+        error2 = '\n404 Not Found \n\n'
         conn.send(error2.encode())
-        print ('FILE NOT FOUND')
+        
         conn.close()
                   
     conn.close()
 
+ # tested on Safari web browers 
+ # python version 3.5.2
  # First I import the socket library, and then get the socket object s.
  # Bind the socket with host and port('' means any host and port 6500)
  # Since up to 5 connections can be allowed to wait in a queue, so the socket can listen to 5 connections
